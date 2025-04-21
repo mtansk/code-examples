@@ -18,31 +18,29 @@ type ClientAccessStateContextType = {
     setter: React.Dispatch<React.SetStateAction<ClientAccessState>>;
 };
 
+const defStateObj = {
+    accessLevel: "guest",
+    accessState: "none",
+    accountId: "",
+    companyId: "",
+    userId: "",
+};
+
+// создание контекста
 export const ClientAccessStateContext =
     createContext<ClientAccessStateContextType>({
-        state: {
-            accessLevel: "guest",
-            accessState: "none",
-            accountId: "",
-            companyId: "",
-            userId: "",
-        },
+        state: defStateObj,
         setter: () => {},
     });
 
+// создание провайдера
 export default function ClientAccessStateProvider({
     children,
 }: {
     children: React.ReactNode;
 }) {
     const [clientAccessState, setClientAccessState] =
-        useState<ClientAccessState>({
-            accessLevel: "guest",
-            accessState: "none",
-            accountId: "",
-            companyId: "",
-            userId: "",
-        });
+        useState<ClientAccessState>(defStateObj);
 
     const value = useMemo(
         () => ({ state: clientAccessState, setter: setClientAccessState }),
@@ -56,6 +54,7 @@ export default function ClientAccessStateProvider({
     );
 }
 
+// функция для быстрого установления контекста из ответа API с данными об авторизации
 export function changeAccessContextWithAuthPayload(
     payload: AuthorizationPayload,
     setter: React.Dispatch<React.SetStateAction<ClientAccessState>>
